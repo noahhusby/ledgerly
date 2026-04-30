@@ -36,8 +36,8 @@ export class Transaction {
   @Column({ type: 'simple-enum', enum: TransactionType })
   transactionType: TransactionType;
 
-  @Column('decimal', { precision: 12, scale: 2 })
-  amount: string;
+  @Column({ type: 'real' })
+  amount: number;
 
   @Column({ type: 'date' })
   transactionDate: string;

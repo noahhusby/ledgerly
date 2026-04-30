@@ -49,4 +49,19 @@ export class AccountService {
   remove(id: number) {
     return `This action removes a #${id} account`;
   }
+
+  async findOwnedById(userId: string, accountId: string): Promise<Account> {
+    const account = await this.accountRepository.findOne({
+      where: {
+        accountId,
+        user: { userId },
+      },
+    });
+
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+
+    return account;
+  }
 }
