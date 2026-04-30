@@ -5,6 +5,10 @@ import { Transaction } from './entities/transaction.entity';
 import { Repository } from 'typeorm';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionType } from '../models';
+import {
+  CategoryBreakdownDto,
+  TransactionStatsDto,
+} from './dto/transaction-stats.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -237,5 +241,90 @@ export class TransactionsService {
       default:
         return 0;
     }
+  }
+
+  async getStats(userId: string): Promise<TransactionStatsDto> {
+    const now = new Date();
+
+    const currentStart = new Date(now);
+    currentStart.setDate(now.getDate() - 30);
+
+    const previousStart = new Date(currentStart);
+    previousStart.setDate(currentStart.getDate() - 30);
+
+    const transactions = await this.findAll(userId);
+
+    const current = transactions.filter((t) => {
+      const d = new Date(t.transactionDate);
+      return d >= currentStart && d <= now;
+    });
+
+    const previous = transactions.filter((t) => {
+      const d = new Date(t.transactionDate);
+      return d >= previousStart && d < currentStart;
+    });
+
+    const currentIncome = this.sumByType(current, TransactionType.INCOME);
+    const previousIncome = this.sumByType(previous, TransactionType.INCOME);
+
+    const currentExpense = this.sumByType(current, TransactionType.EXPENSE);
+    const previousExpense = this.sumByType(previous, TransactionType.EXPENSE);
+
+    return {
+      totalTransactions: {
+        value: current.length,
+        percentChange: this.percent(current.length, previous.length),
+      },
+      totalIncome: {
+        value: currentIncome,
+        percentChange: this.percent(currentIncome, previousIncome),
+      },
+      totalExpense: {
+        value: currentExpense,
+        percentChange: this.percent(currentExpense, previousExpense),
+      },
+      categoryBreakdown: this.categoryBreakdown(current),
+    };
+  }
+
+  private sumByType(
+    transactions: Transaction[],
+    type: TransactionType,
+  ): number {
+    return transactions
+      .filter((t) => t.transactionType === type)
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+  }
+
+  private percent(current: number, previous: number): number {
+    if (previous === 0) {
+      return current === 0 ? 0 : 100;
+    }
+
+    return ((current - previous) / Math.abs(previous)) * 100;
+  }
+
+  private categoryBreakdown(
+    transactions: Transaction[],
+  ): CategoryBreakdownDto[] {
+    const totals = new Map<string, number>();
+
+    const expenses = transactions.filter(
+      (t) => t.transactionType === TransactionType.EXPENSE,
+    );
+
+    const total = expenses.reduce((sum, t) => sum + Number(t.amount), 0);
+
+    for (const t of expenses) {
+      totals.set(t.category, (totals.get(t.category) ?? 0) + Number(t.amount));
+    }
+
+    if (total === 0) return [];
+
+    return [...totals.entries()].map(([category, value]) => ({
+      category,
+      total: value,
+      percentage: (value / total) * 100,
+    }));
   }
 }

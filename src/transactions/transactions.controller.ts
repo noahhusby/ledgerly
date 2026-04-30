@@ -3,6 +3,7 @@ import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { User } from '../auth/user.decorator';
 import type { JwtPayload } from '../auth/auth.guard';
+import { TransactionStatsDto } from './dto/transaction-stats.dto';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -36,5 +37,10 @@ export class TransactionsController {
   @Get('accounts-with-balances')
   findAccountsWithBalances(@User() user: JwtPayload) {
     return this.transactionsService.findAccountsWithBalances(user.sub);
+  }
+
+  @Get('stats')
+  getStats(@User() user: JwtPayload): Promise<TransactionStatsDto> {
+    return this.transactionsService.getStats(user.sub)
   }
 }
