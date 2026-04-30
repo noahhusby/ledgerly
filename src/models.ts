@@ -18,12 +18,6 @@ export enum CategoryType {
   TRANSFER = 'transfer',
 }
 
-export enum TransactionStatus {
-  PENDING = 'pending',
-  POSTED = 'posted',
-  CANCELED = 'canceled',
-}
-
 export enum BudgetPeriodType {
   WEEKLY = 'weekly',
   MONTHLY = 'monthly',

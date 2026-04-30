@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountModule } from './account/account.module';
-import { TransactionCategoriesModule } from './transaction-categories/transaction-categories.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { BudgetsModule } from './budgets/budgets.module';
 import { AuthModule } from './auth/auth.module';
@@ -19,7 +18,6 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     AccountModule,
-    TransactionCategoriesModule,
     TransactionsModule,
     BudgetsModule,
     AuthModule,

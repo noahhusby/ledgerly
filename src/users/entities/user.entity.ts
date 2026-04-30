@@ -7,7 +7,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Account } from '../../account/entities/account.entity';
-import { TransactionCategory } from '../../transaction-categories/entities/transaction-category.entity';
 import { Transaction } from '../../transactions/entities/transaction.entity';
 import { Budget } from '../../budgets/entities/budget.entity';
 
@@ -36,9 +35,6 @@ export class User {
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
-
-  @OneToMany(() => TransactionCategory, (category) => category.user)
-  categories: TransactionCategory[];
 
   @OneToMany(() => Transaction, (transaction) => transaction.user)
   transactions: Transaction[];

@@ -1,4 +1,3 @@
-// transactions/transaction.entity.ts
 import {
   Column,
   CreateDateColumn,
@@ -10,8 +9,7 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Account } from '../../account/entities/account.entity';
-import { TransactionCategory } from '../../transaction-categories/entities/transaction-category.entity';
-import { TransactionStatus, TransactionType } from '../../models';
+import { TransactionType } from '../../models';
 
 @Entity('transactions')
 export class Transaction {
@@ -32,11 +30,8 @@ export class Transaction {
   @JoinColumn({ name: 'to_account_id' })
   toAccount?: Account;
 
-  @ManyToOne(() => TransactionCategory, (category) => category.transactions, {
-    onDelete: 'RESTRICT',
-  })
-  @JoinColumn({ name: 'category_id' })
-  category: TransactionCategory;
+  @Column({ name: 'category', length: 100 })
+  category: string;
 
   @Column({ type: 'simple-enum', enum: TransactionType })
   transactionType: TransactionType;
@@ -52,13 +47,6 @@ export class Transaction {
 
   @Column({ length: 255, nullable: true })
   merchantName?: string;
-
-  @Column({
-    type: 'simple-enum',
-    enum: TransactionStatus,
-    default: TransactionStatus.POSTED,
-  })
-  status: TransactionStatus;
 
   @CreateDateColumn()
   createdAt: Date;

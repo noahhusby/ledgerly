@@ -9,7 +9,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { TransactionCategory } from '../../transaction-categories/entities/transaction-category.entity';
 import { Account } from '../../account/entities/account.entity';
 import { BudgetPeriodType } from '../../models';
 
@@ -21,12 +20,6 @@ export class Budget {
   @ManyToOne(() => User, (user) => user.budgets, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @ManyToOne(() => TransactionCategory, (category) => category.budgets, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'category_id' })
-  category: TransactionCategory;
 
   @ManyToOne(() => Account, (account) => account.budgets, {
     nullable: true,
