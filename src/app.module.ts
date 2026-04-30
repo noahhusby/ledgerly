@@ -2,9 +2,28 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccountModule } from './account/account.module';
+import { TransactionCategoriesModule } from './transaction-categories/transaction-categories.module';
+import { TransactionsModule } from './transactions/transactions.module';
+import { BudgetsModule } from './budgets/budgets.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UsersModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: 'config/ledgerly.sql',
+      synchronize: true,
+      autoLoadEntities: true,
+    }),
+    UsersModule,
+    AccountModule,
+    TransactionCategoriesModule,
+    TransactionsModule,
+    BudgetsModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
