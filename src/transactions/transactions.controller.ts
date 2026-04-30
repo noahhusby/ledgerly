@@ -14,17 +14,27 @@ export class TransactionsController {
   }
 
   @Get()
-  findAll() {
-    return this.transactionsService.findAll();
+  findAll(@User() user: JwtPayload) {
+    return this.transactionsService.findAll(user.sub);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionsService.findOne(+id);
+  @Get('balance-history')
+  getBalanceHistory(@User() user: JwtPayload) {
+    return this.transactionsService.getBalanceHistory(user.sub);
+  }
+
+  @Get('balance-stats')
+  getBalanceStats(@User() user: JwtPayload) {
+    return this.transactionsService.getBalanceStats(user.sub);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.transactionsService.remove(+id);
+  }
+
+  @Get('accounts-with-balances')
+  findAccountsWithBalances(@User() user: JwtPayload) {
+    return this.transactionsService.findAccountsWithBalances(user.sub);
   }
 }

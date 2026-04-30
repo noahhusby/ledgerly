@@ -3,11 +3,12 @@ import {
   IsEnum,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
   MaxLength,
 } from 'class-validator';
-import { TransactionType } from '../../models';
+import { TransactionCategory, TransactionType } from '../../models';
 
 export class CreateTransactionDto {
   @IsUUID()
@@ -17,18 +18,18 @@ export class CreateTransactionDto {
   @IsUUID()
   toAccountId?: string;
 
-  @IsString()
-  @MaxLength(100)
-  category: string;
-
   @IsEnum(TransactionType)
   transactionType: TransactionType;
 
   @IsNumber()
+  @IsPositive()
   amount: number;
 
   @IsDateString()
   transactionDate: string;
+
+  @IsEnum(TransactionCategory)
+  category: TransactionCategory;
 
   @IsOptional()
   @IsString()

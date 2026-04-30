@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Account } from '../../account/entities/account.entity';
-import { TransactionType } from '../../models';
+import { TransactionCategory, TransactionType } from '../../models';
 
 @Entity('transactions')
 export class Transaction {
@@ -30,8 +30,12 @@ export class Transaction {
   @JoinColumn({ name: 'to_account_id' })
   toAccount?: Account;
 
-  @Column({ name: 'category', length: 100 })
-  category: string;
+  @Column({
+    type: 'simple-enum',
+    enum: TransactionCategory,
+    default: TransactionCategory.OTHER,
+  })
+  category: TransactionCategory;
 
   @Column({ type: 'simple-enum', enum: TransactionType })
   transactionType: TransactionType;

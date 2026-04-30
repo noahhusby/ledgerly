@@ -47,6 +47,9 @@ export class AccountService {
         accountId,
         user: { userId },
       },
+      relations: {
+        user: true,
+      },
     });
 
     if (!account) {
