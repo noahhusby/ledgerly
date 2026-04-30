@@ -21,7 +21,6 @@ export class AccountService {
       accountName: dto.accountName,
       accountType: dto.accountType,
       openingBalance: dto.openingBalance,
-      currentBalanceCached: dto.openingBalance,
       currencyCode: dto.currencyCode ?? 'USD',
       isActive: true,
     });
@@ -42,14 +41,6 @@ export class AccountService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} account`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} account`;
-  }
-
   async findOwnedById(userId: string, accountId: string): Promise<Account> {
     const account = await this.accountRepository.findOne({
       where: {
@@ -63,5 +54,10 @@ export class AccountService {
     }
 
     return account;
+  }
+
+  async deleteById(userId: string, accountId: string): Promise<void> {
+    const account = await this.findOwnedById(userId, accountId);
+    await this.accountRepository.remove(account);
   }
 }

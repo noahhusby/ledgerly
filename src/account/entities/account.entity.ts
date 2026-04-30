@@ -32,9 +32,6 @@ export class Account {
   @Column({ type: 'real', default: 0 })
   openingBalance: number;
 
-  @Column({ type: 'real', default: 0 })
-  currentBalanceCached: number;
-
   @Column({ length: 10, default: 'USD' })
   currencyCode: string;
 
