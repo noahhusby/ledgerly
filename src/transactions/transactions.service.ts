@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccountService } from '../account/account.service';
 import { Transaction } from './entities/transaction.entity';
@@ -62,10 +62,6 @@ export class TransactionsService {
         createdAt: 'DESC',
       },
     });
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
   }
 
   async getBalanceHistory(userId: string) {
@@ -326,5 +322,20 @@ export class TransactionsService {
       total: value,
       percentage: (value / total) * 100,
     }));
+  }
+
+  async deleteById(userId: string, transactionId: string): Promise<void> {
+    const transaction = await this.transactionRepository.findOne({
+      where: {
+        transactionId,
+        user: { userId },
+      },
+      relations: ['account'],
+    });
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    await this.transactionRepository.remove(transaction);
   }
 }

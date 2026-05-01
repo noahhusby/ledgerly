@@ -29,11 +29,6 @@ export class TransactionsController {
     return this.transactionsService.getBalanceStats(user.sub);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionsService.remove(+id);
-  }
-
   @Get('accounts-with-balances')
   findAccountsWithBalances(@User() user: JwtPayload) {
     return this.transactionsService.findAccountsWithBalances(user.sub);
@@ -41,6 +36,11 @@ export class TransactionsController {
 
   @Get('stats')
   getStats(@User() user: JwtPayload): Promise<TransactionStatsDto> {
-    return this.transactionsService.getStats(user.sub)
+    return this.transactionsService.getStats(user.sub);
+  }
+
+  @Delete(':id')
+  delete(@User() user: JwtPayload, @Param('id') id: string) {
+    return this.transactionsService.deleteById(user.sub, id);
   }
 }

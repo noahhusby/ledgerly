@@ -10,7 +10,10 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Account } from '../../account/entities/account.entity';
-import { BudgetPeriodType } from '../../models';
+import {
+  BudgetPeriodType,
+  TransactionCategory,
+} from '../../models';
 
 @Entity('budgets')
 export class Budget {
@@ -21,27 +24,24 @@ export class Budget {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @Column({ length: 100 })
+  budgetName: string;
+
   @ManyToOne(() => Account, (account) => account.budgets, {
     nullable: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'account_id' })
-  account?: Account;
+  account: Account | null;
 
   @Column({ type: 'simple-enum', enum: BudgetPeriodType })
   periodType: BudgetPeriodType;
 
-  @Column({ type: 'date' })
-  startDate: string;
+  @Column({ type: 'simple-enum', enum: TransactionCategory })
+  category: TransactionCategory;
 
-  @Column({ type: 'date', nullable: true })
-  endDate?: string;
-
-  @Column('decimal', { precision: 12, scale: 2 })
-  budgetLimit: string;
-
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({ type: 'real' })
+  budgetLimit: number;
 
   @CreateDateColumn()
   createdAt: Date;

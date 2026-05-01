@@ -1,34 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { BudgetsService } from './budgets.service';
 import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
+import { User } from '../auth/user.decorator';
+import { Budget } from './entities/budget.entity';
+import { BudgetResponseDto } from './dto/budget-response.dto';
+import type { JwtPayload } from '../auth/auth.guard';
 
 @Controller('budgets')
 export class BudgetsController {
   constructor(private readonly budgetsService: BudgetsService) {}
 
   @Post()
-  create(@Body() createBudgetDto: CreateBudgetDto) {
-    return this.budgetsService.create(createBudgetDto);
+  create(
+    @User() user: JwtPayload,
+    @Body() dto: CreateBudgetDto,
+  ): Promise<Budget> {
+    return this.budgetsService.create(user.sub, dto);
   }
 
   @Get()
-  findAll() {
-    return this.budgetsService.findAll();
+  findAll(@User() user: JwtPayload): Promise<BudgetResponseDto[]> {
+    return this.budgetsService.findAll(user.sub);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.budgetsService.findOne(+id);
-  }
+  @Delete(':budgetId')
+  delete(
+    @User() user: JwtPayload,
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBudgetDto: UpdateBudgetDto) {
-    return this.budgetsService.update(+id, updateBudgetDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.budgetsService.remove(+id);
+    @Param('budgetId') budgetId: string,
+  ): Promise<void> {
+    return this.budgetsService.deleteById(user.sub, budgetId);
   }
 }
