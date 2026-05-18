@@ -1,7 +1,4 @@
-import {
-  BudgetPeriodType,
-  TransactionCategory,
-} from '../../models';
+import { BudgetPeriodType, TransactionCategory } from '../../models';
 
 export class BudgetResponseDto {
   budgetId: string;
